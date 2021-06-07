@@ -1,7 +1,7 @@
-const express = require('express')
-// const { reset } = require('yargs')
-const app = express()
-const port = 3000
+const express = require('express');
+require('dotenv').config();
+const app = express();
+const port = process.env.PORT;
 const http = require('http');
 const server = http.createServer(app);
 
