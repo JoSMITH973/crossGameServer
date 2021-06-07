@@ -15,10 +15,7 @@ app.get('/yo', (req,res) => {
 
 app.post('/postt', (req,res) =>{
     res.send('test post')
-})
-
-
-
+});
 
 server.listen(port, () => {
   console.log(`server listening on port:${port}`)
