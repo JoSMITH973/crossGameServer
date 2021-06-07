@@ -6,7 +6,9 @@ const http = require('http');
 const server = http.createServer(app);
 
 app.get('/', (req, res) => {
-  res.send('<h1>Hello World!</h1>')
+  res.send(
+      "<h1>Hello World!</h1><br/><h3>Bienvenue sur notre platforme</h3>"
+      )
 })
 app.get('/yo', (req,res) => {
     res.send('test ok')
