@@ -23,7 +23,7 @@ io.on("connection", (socket) => {
         msg = parseInt(msg);
         if(msg === randomNumber) {
             // io.emit('createRoom',socket.id, userName+" says the number is "+msg);
-            io.emit('createRoom',socket.id, msg+" is the good number ! "+useName+" WIN !");
+            io.emit('createRoom',socket.id, userName+" : "+msg+" is the good number ! You WIN !");
             randomNumber = Math.floor(Math.random() * 1348)
         }
         else{
@@ -31,7 +31,7 @@ io.on("connection", (socket) => {
             if(msg < randomNumber) {
                 operator = "bigger"
             }
-            io.emit('createRoom',socket.id, msg+" is the good number !");
+            io.emit('createRoom',socket.id, userName+" : "+msg+" is the wrong number !");
             // io.emit('createRoom',socket.id, userName+" says the number is "+msg)
             // io.emit('createRoom',socket.id, "The number is "+operator+" than "+msg+".")
         }
