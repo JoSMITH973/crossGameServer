@@ -14,16 +14,17 @@ app.get("/chat", (req, res) => {
 });
 
 io.on("connection", (socket) => {
+    let randomNumber = Math.floor(Math.random() * 1348);
     socket.on("createRoom", (socketId, userName, msg) => {
         console.log('socket.id :',socket.id)
         console.log('id reçu :',socketId)
         socket.join(socketId)
         // socket.to(socketId).emit('createRoom', socket.id, userName+" : "+msg)
-        let randomNumber = Math.floor(Math.random() * 1348);;
         msg = parseInt(msg);
         if(msg === randomNumber) {
-            io.emit('createRoom',socket.id, userName+" says the number is "+msg)
-            io.emit('createRoom',socket.id, userName+" is right ! Well played ! You WIN !")
+            io.emit('createRoom',socket.id, userName+" says the number is "+msg);
+            io.emit('createRoom',socket.id, userName+" is right ! Well played ! You WIN !");
+            randomNumber = Math.floor(Math.random() * 1348)
         }
         else{
             let operator = "smaller"  
@@ -33,6 +34,7 @@ io.on("connection", (socket) => {
             io.emit('createRoom',socket.id, userName+" says the number is "+msg)
             io.emit('createRoom',socket.id, "The number is "+operator+" than "+msg+".")
         }
+        console.log(randomNumber)
     })
 });
 
