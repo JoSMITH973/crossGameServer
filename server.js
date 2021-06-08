@@ -19,7 +19,7 @@ io.on("connection", (socket) => {
         console.log('id reçu :',socketId)
         socket.join(socketId)
         // socket.to(socketId).emit('createRoom', socket.id, userName+" : "+msg)
-        let randomNumber = 500;
+        let randomNumber = Math.floor(Math.random() * 1348);;
         msg = parseInt(msg);
         if(msg === randomNumber) {
             io.emit('createRoom',socket.id, userName+" says the number is "+msg)
