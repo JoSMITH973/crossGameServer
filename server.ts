@@ -19,21 +19,11 @@ io.on("connection", (socket) => {
         console.log('id reçu :',socketId)
         socket.join(socketId)
         // socket.to(socketId).emit('createRoom', socket.id, userName+" : "+msg)
-        let randomNumber = 500;
-        msg = parseInt(msg);
-        if(msg === randomNumber) {
-            io.emit('createRoom',socket.id, userName+" says the number is "+msg)
-            io.emit('createRoom',socket.id, userName+" is right ! Well played ! You WIN !")
-        }
-        else{
-            let operator = "smaller"  
-            if(msg < randomNumber) {
-                operator = "bigger"
-            }
-            io.emit('createRoom',socket.id, userName+" says the number is "+msg)
-            io.emit('createRoom',socket.id, "The number is "+operator+" than "+msg+".")
-        }
+        io.emit('createRoom',socket.id, userName+" : "+msg)
     })
+    socket.on("chat message", (user,msg) => {
+        io.emit("chat message",user+" : "+msg);
+    });
 });
 
 app.post("/create", (req, res) => {
