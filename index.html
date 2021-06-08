@@ -65,9 +65,9 @@
 <body>
     <ul id="messages"></ul>
     <form id="form" action="">
-        <input id="name" autocomplete="off" placeholder="Pseudo" required="true"/>
+        <input id="userName" autocomplete="off" placeholder="Pseudo" required="true"/>
         <input id="valMessage" autocomplete="off" placeholder="Your message" required="true" />
-        <button id='submitMessage' >Send</button>
+        <button id='submitMessage'>Send</button>
     </form>
     <script src="/socket.io/socket.io.js"></script>
 
@@ -81,9 +81,9 @@
   
         form.addEventListener('submit', function(e) {
           e.preventDefault();
-          if (input.value) {
-            socket.emit('chat message', name.value+" : "+valMsg.value);
-            input.value = '';
+          if (valMsg.value) {
+            socket.emit('chat message', userName.value,valMsg.value);
+            valMsg.value = '';
           }
         });
   

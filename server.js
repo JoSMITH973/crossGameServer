@@ -17,8 +17,8 @@ io.on("connection", (socket) => {
     socket.on("connected", () => {
         io.emit('connected', true)
     })
-    socket.on("chat message", (msg) => {
-        io.emit("chat message", msg);
+    socket.on("chat message", (user,msg) => {
+        io.emit("chat message",user+" : "+msg);
     });
 });
 
