@@ -22,8 +22,8 @@ io.on("connection", (socket) => {
         // socket.to(socketId).emit('createRoom', socket.id, userName+" : "+msg)
         msg = parseInt(msg);
         if(msg === randomNumber) {
-            io.emit('createRoom',socket.id, userName+" says the number is "+msg);
-            io.emit('createRoom',socket.id, userName+" is right ! Well played ! You WIN !");
+            // io.emit('createRoom',socket.id, userName+" says the number is "+msg);
+            io.emit('createRoom',socket.id, msg+" is the good number ! "+useName+" WIN !");
             randomNumber = Math.floor(Math.random() * 1348)
         }
         else{
@@ -31,8 +31,9 @@ io.on("connection", (socket) => {
             if(msg < randomNumber) {
                 operator = "bigger"
             }
-            io.emit('createRoom',socket.id, userName+" says the number is "+msg)
-            io.emit('createRoom',socket.id, "The number is "+operator+" than "+msg+".")
+            io.emit('createRoom',socket.id, msg+" is the good number !");
+            // io.emit('createRoom',socket.id, userName+" says the number is "+msg)
+            // io.emit('createRoom',socket.id, "The number is "+operator+" than "+msg+".")
         }
         console.log(randomNumber)
     })
