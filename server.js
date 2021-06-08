@@ -1,17 +1,23 @@
 const express = require("express");
 require("dotenv").config();
-const app = express();
 const port = process.env.PORT;
-const http = require("http");
-const server = http.createServer(app);
-const { Server } = require("socket.io");
-const io = new Server(server);
+const app = express();
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
 
-app.get("/", (req,res) => {
-    io.on("connection", (socket) => {
-        res.send("Welcome");
-    })
-})
+app.get("/", (req, res) => {
+    res.sendFile(__dirname + "/index.html");
+    // io.on("connection", (socket) => {
+    //     res.send("Welcome");
+    // })
+});
+
+io.on("connection", (socket) => {
+    socket.on("chat message", (msg) => {
+        io.emit("chat message", msg);
+        io.emit("chat message 2", "hi Stranger");
+    });
+});
 
 app.post("/create", (req, res) => {
     io.on("connection", (socket) => {
@@ -19,7 +25,7 @@ app.post("/create", (req, res) => {
         socket.on("player's nickname", (msg) => {
             console.log("player's nickname : " + msg);
         });
-        socket.broadcast.emit('hi');
+        socket.broadcast.emit("hi");
         socket.on("disconnect", () => {
             console.log("user disconnected");
         });
@@ -32,13 +38,13 @@ app.post("/join", (req, res) => {
         socket.on("player's nickname", (msg) => {
             console.log("player's nickname: " + msg);
         });
-        socket.broadcast.emit('hi');
+        socket.broadcast.emit("hi");
         socket.on("disconnect", () => {
             console.log("user disconnected");
         });
     });
 });
 
-server.listen(port, () => {
+http.listen(port, () => {
     console.log(`server listening on port:${port}`);
 });
