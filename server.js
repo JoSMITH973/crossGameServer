@@ -15,25 +15,23 @@ app.get("/chat", (req, res) => {
 
 io.on("connection", (socket) => {
     let randomNumber = Math.floor(Math.random() * 1348);
-    socket.on("createRoom", (socketId, userName, msg) => {
+    
+    socket.on("createRoom", (socketId, userName, numberPicked) => {
+        let operator = "=";
         console.log('socket.id :',socket.id)
         console.log('id reçu :',socketId)
         socket.join(socketId)
-        // socket.to(socketId).emit('createRoom', socket.id, userName+" : "+msg)
-        msg = parseInt(msg);
-        if(msg === randomNumber) {
-            // io.emit('createRoom',socket.id, userName+" says the number is "+msg);
-            io.emit('createRoom',socket.id, userName+" : "+msg+" is the good number ! You WIN !");
+        // socket.to(socketId).emit('createRoom', socket.id, userName+" : "+numberPicked)
+        numberPicked = parseInt(numberPicked);
+
+        if(numberPicked === randomNumber) {
+            // io.emit('createRoom',socket.id, userName+" says the number is "+numberPicked);
+            io.emit('createRoom',socket.id, userName, numberPicked, operator);
             randomNumber = Math.floor(Math.random() * 1348)
         }
         else{
-            let operator = "smaller"  
-            if(msg < randomNumber) {
-                operator = "bigger"
-            }
-            io.emit('createRoom',socket.id, userName+" : "+msg+" is the wrong number !");
-            // io.emit('createRoom',socket.id, userName+" says the number is "+msg)
-            // io.emit('createRoom',socket.id, "The number is "+operator+" than "+msg+".")
+            operator = (numberPicked < randomNumber) ? "<" : ">";
+            io.emit('createRoom',socket.id, userName, numberPicked, operator);
         }
         console.log(randomNumber)
     })

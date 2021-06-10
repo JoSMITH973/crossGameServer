@@ -24,7 +24,7 @@
             backdrop-filter: blur(10px);
         }
 
-        #valMessage {
+        #numberPicked {
             border: none;
             padding: 0 1rem;
             flex-grow: 1;
@@ -66,7 +66,7 @@
     <ul id="messages"></ul>
     <form id="form" action="">
         <input id="userName" autocomplete="off" placeholder="Pseudo" required="true" />
-        <input id="valMessage" type="number" autocomplete="off" placeholder="Your message" required="true" />
+        <input id="numberPicked" type="number" autocomplete="off" placeholder="Your message" required="true" />
         <button id='submitMessage'>Send</button>
     </form>
     <script src="/socket.io/socket.io.js"></script>
@@ -77,20 +77,22 @@
         var messages = document.getElementById('messages');
         var form = document.getElementById('form');
         var userName = document.getElementById('userName');
-        var valMsg = document.getElementById('valMessage');
+        var numberPicked = document.getElementById('numberPicked');
 
         form.addEventListener('submit', function (e) {
             e.preventDefault();
-            if (valMsg.value) {
-                socket.emit('createRoom', socket.id, userName.value, valMsg.value);
-                valMsg.value = '';
+            if (numberPicked.value) {
+                socket.emit('createRoom', socket.id, userName.value, numberPicked.value);
+                numberPicked.value = '';
             }
         });
 
-        socket.on('createRoom', function (socketId, msg) {
-            console.log('socketId :',socketId)
+        socket.on('createRoom', function (socketId, userName, numberPicked, operator) {
+            console.log('socketId :',socketId);
+            let operatorLetter = (operator == "<") ? "bigger" : "smaller" ;
             var item = document.createElement('li');
-            item.textContent = msg;
+            console.log('operator:', operator);
+            item.textContent = ((operator == "=") ? ("Well played ! "+userName+" Win !") : (userName+' : the number is '+operatorLetter+' than '+numberPicked));
             messages.appendChild(item);
             window.scrollTo(0, document.body.scrollHeight);
         });
