@@ -24,9 +24,9 @@ app.get("/MagicNumber2", (req, res) => {
     // })
 });
 
+let randomNumber = Math.floor(Math.random() * 1348);
 io.on("connection", (socket) => {
     console.log('userConnected')
-    let randomNumber = Math.floor(Math.random() * 1348);
     
     socket.on('createRoom', (userName) => {
         console.log(userName);
