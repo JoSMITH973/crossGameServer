@@ -84,9 +84,10 @@
         form.addEventListener('submit', function (e) {
             e.preventDefault();
             if (numberPicked.value) {
-                // socket.emit('createRoom', socket.id, userName.value, numberPicked.value);
                 socket.emit('joinRoom', roomId.value);
+                socket.emit('magicNumber', roomId.value, userName.value, numberPicked.value);
                 numberPicked.value = '';
+                
             }
         });
 
@@ -98,7 +99,7 @@
         //     window.scrollTo(0, document.body.scrollHeight);
         // });
         
-        socket.on('magicNumber', function (userName, numberPicked, operator) {
+        socket.on('magicNumber', function (room, userName, numberPicked, operator) {
             
             let operatorLetter = (operator == "<") ? "bigger" : "smaller" ;
             var item = document.createElement('li');
