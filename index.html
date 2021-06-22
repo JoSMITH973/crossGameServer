@@ -98,8 +98,8 @@
             window.scrollTo(0, document.body.scrollHeight);
         });
         
-        socket.on('magicNumber', function (socketId, userName, numberPicked, operator) {
-            console.log('socketId :',socketId);
+        socket.on('magicNumber', function (room, userName, numberPicked, operator) {
+            
             let operatorLetter = (operator == "<") ? "bigger" : "smaller" ;
             var item = document.createElement('li');
             console.log('operator:', operator);
