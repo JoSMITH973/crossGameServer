@@ -53,13 +53,13 @@ io.on("connection", (socket) => {
 
         if(numberPicked === randomNumber) {
             // io.emit('createRoom',socket.id, userName+" says the number is "+numberPicked);
-            socket.to(room).emit('magicNumber',room, userName, numberPicked, operator);
+            io.to(room).emit('magicNumber',room, userName, numberPicked, operator);
             randomNumber = Math.floor(Math.random() * 1348)
         }
         else{
             // Si le chiffre choisi est PLUS PETIT que le chiffre aléatoire alors signe ( < ) sinon ( > )
             operator = (numberPicked < randomNumber) ? "<" : ">";
-            socket.to(room).emit('magicNumber',room, userName, numberPicked, operator);
+            io.to(room).emit('magicNumber',room, userName, numberPicked, operator);
         }
 
         console.log(randomNumber);
