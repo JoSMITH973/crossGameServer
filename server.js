@@ -40,9 +40,8 @@ io.on("connection", (socket) => {
         socket.join(room);
     });
 
-    socket.on("magicNumber", (userName, numberPicked) => {
-        let roomId = uniqid();
-        socket.join(roomId);
+    socket.on("magicNumber", (room, userName, numberPicked) => {
+        socket.join(room);
         console.log('room :',room,'username :',userName,'numberPicked :',numberPicked);
         // socket.join(room)
         let operator = "=";
@@ -66,7 +65,7 @@ io.on("connection", (socket) => {
         console.log(randomNumber);
     })
 
-    socket.join()
+    // socket.join()
     
 });
 
