@@ -33,9 +33,6 @@ io.on("connection", (socket) => {
     });
 
     socket.on("magicNumber", (room, userName, numberPicked) => {
-        var numberClients = io.sockets.adapter.rooms[room];
-        numberClients.length;
-        console.log('nombre de clients :',numberClients);
         socket.join(room);
         console.log('room :',room,'username :',userName,'numberPicked :',numberPicked);
         let operator = "=";
