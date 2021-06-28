@@ -70,6 +70,37 @@ io.on("connection", (socket) => {
         }
     });
     
+    function sendPoint(room, indexRoom, userName) {
+        let players = usersArray[indexRoom].players;
+        let indexPlayer = players.findIndex( element => element.name == userName);
+        let playerName = players[indexPlayer].name;
+        players[indexPlayer].point = players[indexPlayer].point+1;
+        console.log('player : '+playerName+' point : ',players[indexPlayer].point);
+        io.in(room).emit('magicNumberPoint', room, playerName, players[indexPlayer].point);
+        
+        // if(players[indexPlayer].point === 3) {
+        if(players[indexPlayer].point === 3) {
+            let dataScore = {
+                magicNumber:[
+                    {
+                        beg: `${usersArray[indexRoom].beg}`,
+                        end: `${new Date()}`,
+                        players:[
+                            {name: `${players[0].name}`,point: `${players[0].point}`},
+                            {name: `${players[1].name}`,point: `${players[1].point}`}
+                        ]
+                    }
+                ]
+            }
+            const gameFile = JSON.parse(fs.readFileSync('./games.json'))
+            JSON.stringify(dataScore)
+            gameFile.push(dataScore)
+            console.log('gameFile object :',gameFile)
+            fs.writeFileSync('games.json',JSON.stringify(gameFile));
+            console.log('read file :', JSON.parse(fs.readFileSync('./games.json')) )
+        }
+    };
+
     socket.on("magicNumber", (room, userName, numberPicked) => {
         console.log('room :',room,'username :',userName,'numberPicked :',numberPicked);
         let operator = "=";
@@ -84,32 +115,9 @@ io.on("connection", (socket) => {
             let indexRoom = usersArray.findIndex( element => element.roomId == room);
             console.log('indexRoom ',indexRoom);
             console.log('why :',usersArray[indexRoom]);
-            if(indexRoom>0) {
-                let players = usersArray[indexRoom].players;
-                let indexPlayer = players.findIndex( element => element.name == userName);
-                console.log('player : '+player+' point')
-                players[indexPlayer].point = players[indexPlayer].point+1;
-                
-                if(players[indexPlayer].point === 3) {
-                    let dataScore = {
-                        magicNumber:[
-                            {
-                                beg: `${usersArray[indexRoom].beg}`,
-                                end: `${new Date()}`,
-                                players:[
-                                    {name: `${players[0].name}`,point: `${players[0].point}`},
-                                    {name: `${players[1].name}`,point: `${players[1].point}`}
-                                ]
-                            }
-                        ]
-                    }
-                    const gameFile = JSON.parse(fs.readFileSync('./games.json'))
-                    JSON.stringify(dataScore)
-                    gameFile.push(dataScore)
-                    console.log('gameFile object :',gameFile)
-                    fs.writeFileSync('games.json',JSON.stringify(gameFile));
-                    console.log('read file :', JSON.parse(fs.readFileSync('./games.json')) )
-                }
+            if(indexRoom>=0) {
+                // io.in(room).emit('magicNumberPoint', room, indexRoom, userName);
+                sendPoint(room, indexRoom, userName);
             }
         }
         else{

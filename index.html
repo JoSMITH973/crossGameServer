@@ -112,6 +112,12 @@
             room = roomId;
             console.log('room :',room);
         });
+        
+        socket.on('magicNumberPoint', function (room, playerName, playerPoint) {
+            console.log('room :',room);
+            console.log('playerName :',playerName);
+            console.log('playerPoint :',playerPoint);
+        });
 
         socket.on('joinRoom', function (response, hostName, guestName) {
             if(response === "!") {
