@@ -102,7 +102,7 @@
             e.preventDefault();
             if (numberPicked.value) {
                 console.log('play')
-                socket.emit('magicNumber', socket.id, userName.value, numberPicked.value);
+                socket.emit('magicNumber', room, userName.value, numberPicked.value);
                 numberPicked.value = '';
                 firstRoom = 1;
             }

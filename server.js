@@ -32,14 +32,13 @@ io.on("connection", (socket) => {
                 roomId: roomId,
                 beg: null,
                 end: null,
-                players: {
-                    host: {
+                players: [
+                    {
                         socketId: socket.id,
                         name: userName,
                         point: 0
-                    },
-                    guest: null
-                }
+                    }
+                ]
             }
         );
         console.log('array :',usersArray);
@@ -55,15 +54,15 @@ io.on("connection", (socket) => {
         if(clientsNumberInSession === 1) {
             usersArray[indexRoom].beg = new Date();
             let players = usersArray[indexRoom].players;
-            players.guest = {
+            players.push({
                 socketId: socket.id,
                 name: userName,
                 point: 0
-            }
+            })
             console.log('this array :', usersArray[indexRoom]);
             socket.join(room);
             console.log('session number after join :', clientsNumberInSession );
-            return io.in(room).emit("joinRoom","=", players.host.name, players.guest.name);
+            return io.in(room).emit("joinRoom","=", players[0].name, players[1].name);
         }
         else {
             console.log('impossible to join')
@@ -83,25 +82,34 @@ io.on("connection", (socket) => {
             randomNumber = Math.floor(Math.random() * 1348)
 
             let indexRoom = usersArray.findIndex( element => element.roomId == room);
-            let players = usersArray[indexRoom].players;
-            let indexPlayer = players.findIndex( element => element.name == userName);
-            players[indexPlayer].point = players[indexPlayer].point+1;
-
-            if(players.host.point === 3 || players.guest.point === 3 ) {
-                let dataScore = {
-                    magicNumber:[
-                        {
-                            beg: `${usersArray[indexRoom].beg}`,
-                            end: `${new Date()}`,
-                            players:[
-                                {name: `${players.host.name}`,point: `${players.host.point}`},
-                                {name: `${players.guest}`,point: `${players.guest.point}`}
-                            ]
-                        }
-                    ]
+            console.log('indexRoom ',indexRoom);
+            console.log('why :',usersArray[indexRoom]);
+            if(indexRoom>0) {
+                let players = usersArray[indexRoom].players;
+                let indexPlayer = players.findIndex( element => element.name == userName);
+                console.log('player : '+player+' point')
+                players[indexPlayer].point = players[indexPlayer].point+1;
+                
+                if(players[indexPlayer].point === 3) {
+                    let dataScore = {
+                        magicNumber:[
+                            {
+                                beg: `${usersArray[indexRoom].beg}`,
+                                end: `${new Date()}`,
+                                players:[
+                                    {name: `${players[0].name}`,point: `${players[0].point}`},
+                                    {name: `${players[1].name}`,point: `${players[1].point}`}
+                                ]
+                            }
+                        ]
+                    }
+                    const gameFile = JSON.parse(fs.readFileSync('./games.json'))
+                    JSON.stringify(dataScore)
+                    gameFile.push(dataScore)
+                    console.log('gameFile object :',gameFile)
+                    fs.writeFileSync('games.json',JSON.stringify(gameFile));
+                    console.log('read file :', JSON.parse(fs.readFileSync('./games.json')) )
                 }
-                const gameFile = JSON.parse(fs.readFileSync('./games.json'))
-                JSON.stringify(dataScore)
             }
         }
         else{
