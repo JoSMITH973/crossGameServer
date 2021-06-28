@@ -64,8 +64,11 @@
 
 <body>
     <ul id="messages"></ul>
-    <form id="form" action="">
+    <form id="roomForm" action="">
         <input id="userName" autocomplete="off" placeholder="Pseudo" required="true" />
+        <button id='createParty'>Create Party</button>
+    </form>
+    <form id="form" action="">
         <input id="numberPicked" type="number" autocomplete="off" placeholder="Your message" required="true" />
         <button id='submitMessage'>Send</button>
     </form>
@@ -78,25 +81,46 @@
         var form = document.getElementById('form');
         var userName = document.getElementById('userName');
         var numberPicked = document.getElementById('numberPicked');
+        var roomForm = document.getElementById('roomForm');
+
+        var firstRoom = 0;
+        var room = null
+
+        roomForm.addEventListener('submit', function (e) {
+            // function create() {
+                e.preventDefault();
+                if (userName.value) {
+                    console.log('createRoom')
+                    socket.emit('createRoom', userName.value);
+                    // numberPicked.value = '';
+                    firstRoom = 1;
+                }
+            // }
+        });
 
         form.addEventListener('submit', function (e) {
             e.preventDefault();
             if (numberPicked.value) {
-                socket.emit('createRoom', socket.id, userName.value, numberPicked.value);
+                console.log('play')
+                socket.emit('magicNumber', socket.id, userName.value, numberPicked.value);
                 numberPicked.value = '';
+                firstRoom = 1;
             }
         });
 
         socket.on('createRoom', function (roomId) {
-            console.log('socketId :',roomId);
-            let operatorLetter = (operator == "<") ? "bigger" : "smaller" ;
-            var item = document.createElement('li');
-            console.log('operator:', operator);
-            // console.log('operator letter :',operatorLetter);
-            item.textContent = ((operator == "=") ? ("Well played ! "+userName+" Win !") : (userName+' : the number is '+operatorLetter+' than '+numberPicked));
-            messages.appendChild(item);
-            window.scrollTo(0, document.body.scrollHeight);
+            room = roomId;
+            console.log('room :',room);
         });
+
+        socket.on('joinRoom', function (response, hostName, guestName) {
+            if(response === "!") {
+                return console.log("impossible to join this room !");
+            }
+            console.log('response :',response);
+            console.log('hostName :',hostName);
+            console.log('guestName :',guestName);
+        })
         
         socket.on('magicNumber', function (room, userName, numberPicked, operator) {
             

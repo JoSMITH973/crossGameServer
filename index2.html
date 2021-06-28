@@ -64,10 +64,13 @@
 
 <body>
     <ul id="messages"></ul>
-    <form id="form" action="">
+    <form id="roomForm" action="">
         <input id="userName" autocomplete="off" placeholder="Pseudo" required="true" />
         <input id="roomId" autocomplete="off" placeholder="roomId" required="true" />
-        <input id="numberPicked" type="number" autocomplete="off" placeholder="Your message" required="true" />
+        <button id='joinParty'>Join Party</button>
+    </form>
+    <form id="form" action="">
+         <input id="numberPicked" type="number" autocomplete="off" placeholder="Your message" required="true" />
         <button id='submitMessage'>Send</button>
     </form>
     <script src="/socket.io/socket.io.js"></script>
@@ -80,17 +83,36 @@
         var userName = document.getElementById('userName');
         var numberPicked = document.getElementById('numberPicked');
         var roomId = document.getElementById('roomId');
+        var roomForm = document.getElementById('roomForm');
+
+        roomForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+        // function join() {
+            if(userName.value && roomId.value) {
+                console.log('joinRoom')
+                socket.emit('joinRoom', roomId.value, userName.value);
+                firstRoom = 1;
+            }
+        // }
+        })
 
         form.addEventListener('submit', function (e) {
             e.preventDefault();
             if (numberPicked.value) {
-                socket.emit('joinRoom', roomId.value);
                 socket.emit('magicNumber', roomId.value, userName.value, numberPicked.value);
                 numberPicked.value = '';
                 
             }
         });
-
+        
+        socket.on('joinRoom', function (response, hostName, guestName) {
+            if(response === "!") {
+                return console.log("impossible to join this room !");
+            }
+            console.log('response :',response);
+            console.log('hostName :',hostName);
+            console.log('guestName :',guestName);
+        })
         // socket.on('createRoom', function (roomId) {
         //     console.log('socketId :',roomId);
         //     var item = document.createElement('li');
