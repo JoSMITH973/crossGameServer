@@ -5,6 +5,7 @@ const app = express();
 const uniqid = require('uniqid');
 const http = require("http").Server(app);
 const io = require("socket.io")(http);
+const fs = require('fs');
 
 let users = [];
 
@@ -29,6 +30,8 @@ io.on("connection", (socket) => {
         usersArray.push(
             {
                 roomId: roomId,
+                beg: null,
+                end: null,
                 players: {
                     host: {
                         socketId: socket.id,
@@ -49,6 +52,7 @@ io.on("connection", (socket) => {
         let indexRoom = usersArray.findIndex( element => element.roomId == room);
         console.log('index :',indexRoom);
         if(clientsNumberInSession === 1) {
+            usersArray[indexRoom].beg = new Date();
             let players = usersArray[indexRoom].players;
             players.guest = {
                 socketId: socket.id,
