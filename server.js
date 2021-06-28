@@ -85,8 +85,8 @@ io.on("connection", (socket) => {
         else{
             // Si le chiffre choisi est PLUS PETIT que le chiffre aléatoire alors signe ( < ) sinon ( > )
             operator = (numberPicked < randomNumber) ? "<" : ">";
-            // io.in(room).emit('magicNumber',room, userName, numberPicked, operator);
-            io.to(room).emit('magicNumber',room, userName, numberPicked, operator);
+            io.in(room).emit('magicNumber',room, userName, numberPicked, operator);
+            // io.to(room).emit('magicNumber',room, userName, numberPicked, operator);
         }
 
         console.log(randomNumber);
