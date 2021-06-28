@@ -100,7 +100,7 @@
         // });
         
         socket.on('magicNumber', function (room, userName, numberPicked, operator) {
-            
+            console.log('socketid :',socket.id)
             let operatorLetter = (operator == "<") ? "bigger" : "smaller" ;
             var item = document.createElement('li');
             console.log('operator:', operator);
