@@ -35,7 +35,8 @@ io.on("connection", (socket) => {
                 players: {
                     host: {
                         socketId: socket.id,
-                        name: userName
+                        name: userName,
+                        point: 0
                     },
                     guest: null
                 }
@@ -56,7 +57,8 @@ io.on("connection", (socket) => {
             let players = usersArray[indexRoom].players;
             players.guest = {
                 socketId: socket.id,
-                name: userName
+                name: userName,
+                point: 0
             }
             console.log('this array :', usersArray[indexRoom]);
             socket.join(room);
@@ -70,12 +72,6 @@ io.on("connection", (socket) => {
     });
     
     socket.on("magicNumber", (room, userName, numberPicked) => {
-        // let clientsNumberInSession = io.of("/").adapter.rooms.get(room).size;
-        // console.log('session :', clientsNumberInSession );
-        // if(clientsNumberInSession > 2) {
-        //     return socket.emit('magicNumber',room, userName, 0, "!");
-        // }
-        // socket.join(room);
         console.log('room :',room,'username :',userName,'numberPicked :',numberPicked);
         let operator = "=";
         console.log('id room reçu :',room)
@@ -85,6 +81,28 @@ io.on("connection", (socket) => {
             // io.emit('createRoom',socket.id, userName+" says the number is "+numberPicked);
             io.in(room).emit('magicNumber',room, userName, numberPicked, operator);
             randomNumber = Math.floor(Math.random() * 1348)
+
+            let indexRoom = usersArray.findIndex( element => element.roomId == room);
+            let players = usersArray[indexRoom].players;
+            let indexPlayer = players.findIndex( element => element.name == userName);
+            players[indexPlayer].point = players[indexPlayer].point+1;
+
+            if(players.host.point === 3 || players.guest.point === 3 ) {
+                let dataScore = {
+                    magicNumber:[
+                        {
+                            beg: `${usersArray[indexRoom].beg}`,
+                            end: `${new Date()}`,
+                            players:[
+                                {name: `${players.host.name}`,point: `${players.host.point}`},
+                                {name: `${players.guest}`,point: `${players.guest.point}`}
+                            ]
+                        }
+                    ]
+                }
+                const gameFile = JSON.parse(fs.readFileSync('./games.json'))
+                JSON.stringify(dataScore)
+            }
         }
         else{
             // Si le chiffre choisi est PLUS PETIT que le chiffre aléatoire alors signe ( < ) sinon ( > )
