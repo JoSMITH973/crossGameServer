@@ -113,11 +113,9 @@
         
         socket.on('joinRoom', function (response, hostName, guestName) {
             if(response === "!") {
-                return console.log("impossible to join this room !");
+                return console.log("This room is full or does not exist !");
             }
-            console.log('response :',response);
-            console.log('hostName :',hostName);
-            console.log('guestName :',guestName);
+            console.log('Player ound : ', hostName,' Vs. ', guestName);
         })
         // socket.on('createRoom', function (roomId) {
         //     console.log('socketId :',roomId);
