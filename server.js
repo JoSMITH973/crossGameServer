@@ -50,27 +50,28 @@ io.on("connection", (socket) => {
         let indexRoom = usersArray.findIndex( element => element.roomId == room);
         console.log('index :',indexRoom);
         
-        if (indexRoom === -1) {
+        if (indexRoom === -1 || clientsNumberInSession === 1 ) {
             console.log('impossible to join')
             return socket.emit("joinRoom","!")
         }
-            let clientsNumberInSession = io.of("/").adapter.rooms.get(room).size;
-            console.log('session number before join :', clientsNumberInSession );
-            
-            if(clientsNumberInSession === 1 ) {
-                usersArray[indexRoom].beg = new Date();
-                let players = usersArray[indexRoom].players;
-                players.push({
-                    socketId: socket.id,
-                    name: userName,
-                    point: 0
-                })
-                console.log('this array :', usersArray[indexRoom]);
-                socket.join(room);
-                console.log('joinRoom :',room);
-                console.log('session number after join :', clientsNumberInSession );
-                return io.in(room).emit("joinRoom", "=", players[0].name, players[1].name, whichPlayerStart);
-            }
+
+        let clientsNumberInSession = io.of("/").adapter.rooms.get(room).size;
+        console.log('session number before join :', clientsNumberInSession );
+        
+        if(clientsNumberInSession === 1 ) {
+            usersArray[indexRoom].beg = new Date();
+            let players = usersArray[indexRoom].players;
+            players.push({
+                socketId: socket.id,
+                name: userName,
+                point: 0
+            })
+            console.log('this array :', usersArray[indexRoom]);
+            socket.join(room);
+            console.log('joinRoom :',room);
+            console.log('session number after join :', clientsNumberInSession );
+            return io.in(room).emit("joinRoom", "=", players[0].name, players[1].name, whichPlayerStart);
+        }
         // if {
         //     console.log('impossible to join')
         //     return socket.emit("joinRoom","!")
