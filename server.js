@@ -46,6 +46,7 @@ io.on("connection", (socket) => {
 
     socket.on("joinRoom", (room, userName) => {
         let whichPlayerStart = Math.floor(Math.random() * 2);
+        // console.log('who play :',whichPlayerStart);
         console.log('joinRoom :',room);
         let clientsNumberInSession = io.of("/").adapter.rooms.get(room).size;
         console.log('session number before join :', clientsNumberInSession );
@@ -63,7 +64,7 @@ io.on("connection", (socket) => {
             console.log('this array :', usersArray[indexRoom]);
             socket.join(room);
             console.log('session number after join :', clientsNumberInSession );
-            return io.in(room).emit("joinRoom","=", players[0].name, players[1].name, whichPlayerStart);
+            return io.in(room).emit("joinRoom", "=", players[0].name, players[1].name, whichPlayerStart);
         }
         else {
             console.log('impossible to join')
@@ -108,6 +109,7 @@ io.on("connection", (socket) => {
         console.log('id room reçu :',room)
         numberPicked = parseInt(numberPicked);
         whichPlayerStart = (whichPlayerStart === 1) ? 0 : 1;
+        // console.log('whichPlayerSatrt :',whichPlayerStart);
 
         if(numberPicked === randomNumber) {
             // io.emit('createRoom',socket.id, userName+" says the number is "+numberPicked);

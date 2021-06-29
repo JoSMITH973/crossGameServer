@@ -84,6 +84,7 @@
         var numberPicked = document.getElementById('numberPicked');
         var roomId = document.getElementById('roomId');
         var roomForm = document.getElementById('roomForm');
+        var whoPlay = null;
 
         roomForm.addEventListener('submit', function (e) {
             e.preventDefault();
@@ -99,7 +100,7 @@
         form.addEventListener('submit', function (e) {
             e.preventDefault();
             if (numberPicked.value) {
-                socket.emit('magicNumber', roomId.value, userName.value, numberPicked.value);
+                socket.emit('magicNumber', roomId.value, userName.value, numberPicked.value, whoPlay);
                 numberPicked.value = '';
                 
             }
@@ -111,11 +112,13 @@
             console.log('playerPoint :',playerPoint);
         });
         
-        socket.on('joinRoom', function (response, hostName, guestName) {
+        socket.on('joinRoom', function (response, hostName, guestName, whichPlayerStart) {
             if(response === "!") {
                 return console.log("This room is full or does not exist !");
             }
-            console.log('Player ound : ', hostName,' Vs. ', guestName);
+            whoPlay = whichPlayerStart;
+            console.log(whichPlayerStart, ' who play : ', whichPlayerStart === 1 ? "hote" : "invité");
+            console.log('Player found : ', hostName,' Vs. ', guestName);
         })
         // socket.on('createRoom', function (roomId) {
         //     console.log('socketId :',roomId);
@@ -125,11 +128,13 @@
         //     window.scrollTo(0, document.body.scrollHeight);
         // });
         
-        socket.on('magicNumber', function (room, userName, numberPicked, operator) {
+        socket.on('magicNumber', function (room, userName, numberPicked, operator, whichPlayerStart) {
             console.log('socketid :',socket.id)
             let operatorLetter = (operator == "<") ? "bigger" : "smaller" ;
             var item = document.createElement('li');
             console.log('operator:', operator);
+            whoPlay = whichPlayerStart;
+            console.log(whichPlayerStart, ' who play : ', whichPlayerStart === 1 ? "hote" : "invité");
             // console.log('operator letter :',operatorLetter);
             item.textContent = ((operator == "=") ? ("Well played ! "+userName+" Win !") : (userName+' : the number is '+operatorLetter+' than '+numberPicked));
             messages.appendChild(item);
