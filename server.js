@@ -102,15 +102,16 @@ io.on("connection", (socket) => {
         }
     };
 
-    socket.on("magicNumber", (room, userName, numberPicked) => {
+    socket.on("magicNumber", (room, userName, numberPicked, whichPlayerStart) => {
         console.log('room :',room,'username :',userName,'numberPicked :',numberPicked);
         let operator = "=";
         console.log('id room reçu :',room)
         numberPicked = parseInt(numberPicked);
+        whichPlayerStart = (whichPlayerStart === 1) ? 0 : 1;
 
         if(numberPicked === randomNumber) {
             // io.emit('createRoom',socket.id, userName+" says the number is "+numberPicked);
-            io.in(room).emit('magicNumber',room, userName, numberPicked, operator);
+            io.in(room).emit('magicNumber',room, userName, numberPicked, operator, whichPlayerStart);
             randomNumber = Math.floor(Math.random() * 1348)
 
             let indexRoom = usersArray.findIndex( element => element.roomId == room);
@@ -124,7 +125,7 @@ io.on("connection", (socket) => {
         else{
             // Si le chiffre choisi est PLUS PETIT que le chiffre aléatoire alors signe ( < ) sinon ( > )
             operator = (numberPicked < randomNumber) ? "<" : ">";
-            io.in(room).emit('magicNumber',room, userName, numberPicked, operator);
+            io.in(room).emit('magicNumber',room, userName, numberPicked, operator, whichPlayerStart);
             // io.to(room).emit('magicNumber',room, userName, numberPicked, operator);
         }
 
