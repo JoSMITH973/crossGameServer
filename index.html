@@ -132,7 +132,7 @@
             var item = document.createElement('li');
             console.log('operator:', operator);
             whoPlay = whichPlayerStart;
-            console.log(whichPlayerStart, ' who play : ', whichPlayerStart === 1 ? "hote" : "invité");
+            console.log('who play :',whichPlayerStart);
             // console.log('operator letter :',operatorLetter);
             item.textContent = ((operator == "=") ? ("Well played ! "+userName+" Win !") : (userName+' : the number is '+operatorLetter+' than '+numberPicked ));
             messages.appendChild(item);

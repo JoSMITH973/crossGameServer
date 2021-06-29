@@ -104,11 +104,12 @@ io.on("connection", (socket) => {
     };
 
     socket.on("magicNumber", (room, userName, numberPicked, whichPlayerStart) => {
-        console.log('room :',room,'username :',userName,'numberPicked :',numberPicked);
+        let indexRoom = usersArray.findIndex( element => element.roomId == room);
         let operator = "=";
-        console.log('id room reçu :',room)
+
+        console.log('room :',room,'username :',userName,'numberPicked :',numberPicked);
         numberPicked = parseInt(numberPicked);
-        whichPlayerStart = (whichPlayerStart === 1) ? 0 : 1;
+        whichPlayerStart = (whichPlayerStart === usersArray[indexRoom].players[0].name) ? usersArray[indexRoom].players[1].name : usersArray[indexRoom].players[0].name;
         // console.log('whichPlayerSatrt :',whichPlayerStart);
 
         if(numberPicked === randomNumber) {
@@ -116,7 +117,6 @@ io.on("connection", (socket) => {
             io.in(room).emit('magicNumber',room, userName, numberPicked, operator, whichPlayerStart);
             randomNumber = Math.floor(Math.random() * 1348)
 
-            let indexRoom = usersArray.findIndex( element => element.roomId == room);
             console.log('indexRoom ',indexRoom);
             console.log('why :',usersArray[indexRoom]);
             if(indexRoom>=0) {
