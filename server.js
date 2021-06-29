@@ -46,14 +46,14 @@ io.on("connection", (socket) => {
 
     socket.on("joinRoom", (room, userName) => {
         let whichPlayerStart = Math.floor(Math.random() * 2);
-        // console.log('who play :',whichPlayerStart);
         console.log('joinRoom :',room);
         let clientsNumberInSession = io.of("/").adapter.rooms.get(room).size;
         console.log('session number before join :', clientsNumberInSession );
         
         let indexRoom = usersArray.findIndex( element => element.roomId == room);
         console.log('index :',indexRoom);
-        if(clientsNumberInSession === 1) {
+
+        if(clientsNumberInSession === 1 && indexRoom >= 0) {
             usersArray[indexRoom].beg = new Date();
             let players = usersArray[indexRoom].players;
             players.push({
