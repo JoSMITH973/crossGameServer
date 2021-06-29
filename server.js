@@ -50,8 +50,10 @@ io.on("connection", (socket) => {
         let indexRoom = usersArray.findIndex( element => element.roomId == room);
         console.log('index :',indexRoom);
         
-        if (indexRoom >= 0) {
-            
+        if (indexRoom === -1) {
+            console.log('impossible to join')
+            return socket.emit("joinRoom","!")
+        }
             let clientsNumberInSession = io.of("/").adapter.rooms.get(room).size;
             console.log('session number before join :', clientsNumberInSession );
             
@@ -69,11 +71,10 @@ io.on("connection", (socket) => {
                 console.log('session number after join :', clientsNumberInSession );
                 return io.in(room).emit("joinRoom", "=", players[0].name, players[1].name, whichPlayerStart);
             }
-            else {
-                console.log('impossible to join')
-                return socket.emit("joinRoom","!")
-            }
-        }
+        // if {
+        //     console.log('impossible to join')
+        //     return socket.emit("joinRoom","!")
+        // }
     });
     
     function sendPoint(room, indexRoom, userName) {
