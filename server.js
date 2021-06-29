@@ -50,7 +50,7 @@ io.on("connection", (socket) => {
         let indexRoom = usersArray.findIndex( element => element.roomId == room);
         console.log('index :',indexRoom);
         
-        if (indexRoom === -1 || clientsNumberInSession === 1 ) {
+        if (indexRoom === -1 || clientsNumberInSession !== 1 ) {
             console.log('impossible to join')
             return socket.emit("joinRoom","!")
         }
