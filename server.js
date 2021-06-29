@@ -41,22 +41,22 @@ io.on("connection", (socket) => {
                 ]
             }
         );
-        console.log('array :',usersArray);
     })
 
     socket.on("joinRoom", (room, userName) => {
         let whichPlayerStart = Math.floor(Math.random() * 2);
         
+        // index de l'objet où se trouve la room recherché
         let indexRoom = usersArray.findIndex( element => element.roomId == room);
-        console.log('index :',indexRoom);
         
+        // Si la room n'existe pas indexRoom retourne -1 et donc on retourne une erreur
         if (indexRoom === -1 ) {
             console.log('impossible to join')
             return socket.emit("joinRoom","!")
         }
 
+        // Nombre de clients dans la session (room)
         let clientsNumberInSession = io.of("/").adapter.rooms.get(room).size;
-        console.log('session number before join :', clientsNumberInSession );
         
         if(clientsNumberInSession === 1 ) {
             usersArray[indexRoom].beg = new Date();
@@ -66,31 +66,23 @@ io.on("connection", (socket) => {
                 name: userName,
                 point: 0
             })
-            console.log('this array :', usersArray[indexRoom]);
             socket.join(room);
-            console.log('joinRoom :',room);
-            console.log('session number after join :', clientsNumberInSession );
             return io.in(room).emit("joinRoom", "=", players[0].name, players[1].name, whichPlayerStart);
         }
         else {
             console.log('impossible to join')
             return socket.emit("joinRoom","!")
         }
-        // if {
-        //     console.log('impossible to join')
-        //     return socket.emit("joinRoom","!")
-        // }
     });
     
+    // This function send point on a socket to all the users
     function sendPoint(room, indexRoom, userName) {
         let players = usersArray[indexRoom].players;
         let indexPlayer = players.findIndex( element => element.name == userName);
         let playerName = players[indexPlayer].name;
         players[indexPlayer].point = players[indexPlayer].point+1;
-        console.log('player : '+playerName+' point : ',players[indexPlayer].point);
         io.in(room).emit('magicNumberPoint', room, playerName, players[indexPlayer].point);
         
-        // if(players[indexPlayer].point === 3) {
         if(players[indexPlayer].point === 3) {
             let dataScore = {
                 magicNumber:[
@@ -107,9 +99,8 @@ io.on("connection", (socket) => {
             const gameFile = JSON.parse(fs.readFileSync('./games.json'))
             JSON.stringify(dataScore)
             gameFile.push(dataScore)
-            console.log('gameFile object :',gameFile)
             fs.writeFileSync('games.json',JSON.stringify(gameFile));
-            console.log('read file :', JSON.parse(fs.readFileSync('./games.json')) )
+            console.log('This party has been write in the games.json file.')
         }
     };
 
@@ -117,20 +108,15 @@ io.on("connection", (socket) => {
         let indexRoom = usersArray.findIndex( element => element.roomId == room);
         let operator = "=";
 
-        console.log('room :',room,'username :',userName,'numberPicked :',numberPicked);
         numberPicked = parseInt(numberPicked);
         whichPlayerStart = (whichPlayerStart === usersArray[indexRoom].players[0].name) ? usersArray[indexRoom].players[1].name : usersArray[indexRoom].players[0].name;
-        // console.log('whichPlayerSatrt :',whichPlayerStart);
 
         if(numberPicked === randomNumber) {
-            // io.emit('createRoom',socket.id, userName+" says the number is "+numberPicked);
             io.in(room).emit('magicNumber',room, userName, numberPicked, operator, whichPlayerStart);
             randomNumber = Math.floor(Math.random() * 1348)
 
-            console.log('indexRoom ',indexRoom);
-            console.log('why :',usersArray[indexRoom]);
-            if(indexRoom>=0) {
-                // io.in(room).emit('magicNumberPoint', room, indexRoom, userName);
+            // On vérifie que la session existe bien avant d'utiliser la fonction sendPoint
+            if(indexRoom >= 0) {
                 sendPoint(room, indexRoom, userName);
             }
         }
@@ -141,7 +127,8 @@ io.on("connection", (socket) => {
             // io.to(room).emit('magicNumber',room, userName, numberPicked, operator);
         }
 
-        console.log(randomNumber);
+        // On affiche le chiffre réel dans la console
+        console.log('chiffre à trouver :',randomNumber);
     })
 
     socket.on("disconnect", () => {
