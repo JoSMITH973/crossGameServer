@@ -46,7 +46,6 @@ io.on("connection", (socket) => {
 
     socket.on("joinRoom", (room, userName) => {
         let whichPlayerStart = Math.floor(Math.random() * 2);
-        console.log('joinRoom :',room);
         
         let indexRoom = usersArray.findIndex( element => element.roomId == room);
         console.log('index :',indexRoom);
@@ -66,6 +65,7 @@ io.on("connection", (socket) => {
                 })
                 console.log('this array :', usersArray[indexRoom]);
                 socket.join(room);
+                console.log('joinRoom :',room);
                 console.log('session number after join :', clientsNumberInSession );
                 return io.in(room).emit("joinRoom", "=", players[0].name, players[1].name, whichPlayerStart);
             }
